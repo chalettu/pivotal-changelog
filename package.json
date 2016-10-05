@@ -1,0 +1,26 @@
+{
+  "name": "pivotal-changelog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chalettu/pivotal-changelog.git"
+  },
+  "author": "Chris Hale",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/chalettu/pivotal-changelog/issues"
+  },
+  "homepage": "https://github.com/chalettu/pivotal-changelog#readme",
+  "dependencies": {
+    "json2csv": "^3.7.0",
+    "postmark": "^1.2.1",
+    "q": "^1.4.1",
+    "request": "^2.75.0",
+    "request-promise": "^4.1.1"
+  }
+}
