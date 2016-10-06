@@ -12,6 +12,17 @@ var projects=config.projects;
 var pivotal_api_token=config.pivotal_api_token;
 var csv_files=[];
 
+
+if (process.argv.indexOf("--interactive") !== -1) {
+    interactive_mode().then(function (stories) {
+
+        csv_files.push(generate_csv(stories));
+        send_email(generate_csv(stories));
+    });
+}
+
+
+
 function interactive_mode(){
   var deferred = Q.defer();  
     projects.forEach(function (project,index) {
@@ -61,11 +72,6 @@ function interactive_mode(){
     return deferred.promise;
 }
 
-interactive_mode().then(function(stories){
-
- csv_files.push(generate_csv(stories));
-        send_email(generate_csv(stories));
-});
 
 function get_iteration(iteration_number){
 var deferred = Q.defer();
