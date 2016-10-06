@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/chalettu/pivotal-changelog#readme",
   "dependencies": {
+    "inquirer": "^1.2.1",
     "json2csv": "^3.7.0",
     "postmark": "^1.2.1",
     "q": "^1.4.1",
