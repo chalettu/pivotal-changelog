@@ -1,28 +1,87 @@
 var Q = require("q");
-var local_config = require("./conf/config.json");
-var config=local_config;
+
+var config={};
 var json2csv = require('json2csv');
 var postmark = require("postmark");
 var rp = require('request-promise');
 var inquirer = require('inquirer');
+var moment = require('moment');
 
 var client = new postmark.Client(config.postmark_api_key);
 var pivotal_base_url='https://www.pivotaltracker.com/services/v5/';
 var projects=config.projects;
 var pivotal_api_token=config.pivotal_api_token;
 var csv_files=[];
-
-
+load_config();
 if (process.argv.indexOf("--interactive") !== -1) {
     interactive_mode().then(function (stories) {
-
         csv_files.push(generate_csv(stories));
         send_email(generate_csv(stories));
     });
 }
+else{
+
+    setInterval(auto_process_iteration(),60000)
+}
+function load_config(){
+
+if (typeof (process.env.PROJECTS) != 'undefined') {
+
+config={
+  "projects":process.env.PROJECTS,
+    "pivotal_api_token":process.env.PIVOTAL_API_TOKEN,
+    "postmark_api_key":process.env.POSTMARK_API_KEY,
+    "sender_address":process.env.SENDER_ADDRESS,
+    "recipient_address":process.env.RECIPIENT_ADDRESS
+};
+
+}
+else{
+config = require("./conf/config.json");
+}
 
 
+}
+function auto_process_iteration() {
+    console.log("Running app")
+    var yesterday = moment().subtract(1, 'day');
+    //yesterday = moment("2016-10-25T05:00:00Z");
 
+    projects.forEach(function (project, index) {
+
+        var project_name = "";
+        get_project_name(project).then(function (data) {
+            project_name = data;
+        });
+        var stories = [];
+        var url = pivotal_base_url + 'projects/' + project + '/iterations';
+        var body = {};
+        var options = build_pivotal_rest_request(url, body);
+        options.method = "GET";
+
+        rp(options).then(function (iterations) {
+            // console.log(iterations);
+            iterations.forEach(function (iteration) {
+
+                if (moment(yesterday).isSame(iteration.finish, 'day')) {
+                    get_iteration(iteration.number).then(function (data) {
+                        data.stories.forEach(function (story) {
+                            if (story.current_state === 'accepted') {
+                                stories.push(get_story(project_name, story));
+                            }
+                        });
+                        csv_files.push(generate_csv(stories));
+                        send_email(generate_csv(stories));
+
+                    });
+                }
+
+            });
+        });
+
+    });
+
+}
 function interactive_mode(){
   var deferred = Q.defer();  
     projects.forEach(function (project,index) {
@@ -71,7 +130,6 @@ function interactive_mode(){
     });
     return deferred.promise;
 }
-
 
 function get_iteration(iteration_number){
 var deferred = Q.defer();
@@ -127,9 +185,9 @@ function send_email(csv) {
 
     client.sendEmail({
         "From": config.sender_address,
-        "To": "chris.hale@me.com",
-        "Subject": "Test",
-        "TextBody": "Test Message",
+        "To": config.recipient_address,
+        "Subject": "Pivotal Iteration CSV",
+        "TextBody": "Attached you will find the CSV for the desired iteration",
         "Attachments":[  {
                 "Content": new Buffer(csv).toString('base64'),
                 "Name": "pivotal_issues.csv",

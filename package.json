@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
   "dependencies": {
     "inquirer": "^1.2.1",
     "json2csv": "^3.7.0",
+    "moment": "^2.15.1",
     "postmark": "^1.2.1",
     "q": "^1.4.1",
     "request": "^2.75.0",

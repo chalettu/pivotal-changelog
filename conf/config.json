@@ -1,0 +1,7 @@
+{
+    "projects":[],
+    "pivotal_api_token":"",
+    "postmark_api_key":"",
+    "sender_address":"",
+    "recipient_address":"   "
+}
