@@ -24,7 +24,7 @@ if (process.argv.indexOf("--interactive") !== -1) {
 }
 else{
 
-    setInterval(auto_process_iteration,60000)
+    setInterval(auto_process_iteration,86400000);
 }
 console.log("Pivotal Service loaded");
 console.log("config "+JSON.stringify(config));
