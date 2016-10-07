@@ -27,23 +27,16 @@ else{
 }
 function load_config() {
 
-    if (typeof (process.env.PROJECTS) != 'undefined') {
-
-        config = {
-            "projects": process.env.PROJECTS,
-            "pivotal_api_token": process.env.PIVOTAL_API_TOKEN,
-            "postmark_api_key": process.env.POSTMARK_API_KEY,
-            "sender_address": process.env.SENDER_ADDRESS,
-            "recipient_address": process.env.RECIPIENT_ADDRESS
-        };
-
+    if (typeof (process.env.CONFIG) != 'undefined') {
+        config = process.env.CONFIG;
     }
     else {
         config = require("./conf/config.json");
     }
 }
 function auto_process_iteration() {
-    console.log("Running app")
+    console.log("Running app");
+    console.log(moment().format());
     var yesterday = moment().subtract(1, 'day');
     //yesterday = moment("2016-10-25T05:00:00Z");
 
