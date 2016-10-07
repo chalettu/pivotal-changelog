@@ -10,7 +10,8 @@ var moment = require('moment');
 var csv_files=[];
 load_config();
 
-var client = new postmark.Client(config.postmark_api_key);
+var client= new postmark.Client(config.postmark_api_key);
+
 var pivotal_base_url='https://www.pivotaltracker.com/services/v5/';
 var projects=config.projects;
 var pivotal_api_token=config.pivotal_api_token;
@@ -23,16 +24,20 @@ if (process.argv.indexOf("--interactive") !== -1) {
 }
 else{
 
-    setInterval(auto_process_iteration(),60000)
+    setInterval(auto_process_iteration,60000)
 }
+console.log("Pivotal Service loaded");
+console.log("config "+JSON.stringify(config));
 function load_config() {
 
     if (typeof (process.env.CONFIG) != 'undefined') {
-        config = process.env.CONFIG;
+        config = JSON.parse(process.env.CONFIG);
     }
     else {
         config = require("./conf/config.json");
     }
+
+    
 }
 function auto_process_iteration() {
     console.log("Running app");
