@@ -7,12 +7,14 @@ var rp = require('request-promise');
 var inquirer = require('inquirer');
 var moment = require('moment');
 
+var csv_files=[];
+load_config();
+
 var client = new postmark.Client(config.postmark_api_key);
 var pivotal_base_url='https://www.pivotaltracker.com/services/v5/';
 var projects=config.projects;
 var pivotal_api_token=config.pivotal_api_token;
-var csv_files=[];
-load_config();
+
 if (process.argv.indexOf("--interactive") !== -1) {
     interactive_mode().then(function (stories) {
         csv_files.push(generate_csv(stories));
@@ -23,24 +25,22 @@ else{
 
     setInterval(auto_process_iteration(),60000)
 }
-function load_config(){
+function load_config() {
 
-if (typeof (process.env.PROJECTS) != 'undefined') {
+    if (typeof (process.env.PROJECTS) != 'undefined') {
 
-config={
-  "projects":process.env.PROJECTS,
-    "pivotal_api_token":process.env.PIVOTAL_API_TOKEN,
-    "postmark_api_key":process.env.POSTMARK_API_KEY,
-    "sender_address":process.env.SENDER_ADDRESS,
-    "recipient_address":process.env.RECIPIENT_ADDRESS
-};
+        config = {
+            "projects": process.env.PROJECTS,
+            "pivotal_api_token": process.env.PIVOTAL_API_TOKEN,
+            "postmark_api_key": process.env.POSTMARK_API_KEY,
+            "sender_address": process.env.SENDER_ADDRESS,
+            "recipient_address": process.env.RECIPIENT_ADDRESS
+        };
 
-}
-else{
-config = require("./conf/config.json");
-}
-
-
+    }
+    else {
+        config = require("./conf/config.json");
+    }
 }
 function auto_process_iteration() {
     console.log("Running app")
