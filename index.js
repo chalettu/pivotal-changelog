@@ -113,7 +113,7 @@ function interactive_mode(){
                 choices: choices
             }).then(function (answers) {
                 var iteration = answers.iteration;
-                get_iteration(iteration).then(function (data) {
+                get_iteration(project,iteration).then(function (data) {
                     data.stories.forEach(function (story) {
                         if (story.current_state === 'accepted') {
                             stories.push(get_story(project_name, story));
@@ -129,10 +129,10 @@ function interactive_mode(){
     return deferred.promise;
 }
 
-function get_iteration(iteration_number){
+function get_iteration(project_id,iteration_number){
 var deferred = Q.defer();
 
- var url = pivotal_base_url + 'projects/1876659/iterations/'+iteration_number;
+ var url = pivotal_base_url + 'projects/'+project_id+'/iterations/'+iteration_number;
     var body = {};
     var options = build_pivotal_rest_request(url, body);
     options.method = "GET";
